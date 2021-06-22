@@ -1,6 +1,9 @@
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:chat_ui/models/message_model.dart';
 import 'package:chat_ui/models/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:highlight_text/highlight_text.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class ChatScreen extends StatefulWidget {
   late final User user;
@@ -12,6 +15,37 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final Map<String, HighlightedWord> _highlights = {
+    'flutter': HighlightedWord(
+      onTap: () => print('flutter'),
+      textStyle: const TextStyle(
+        color: Colors.blue,
+      ),
+    ),
+    'speech': HighlightedWord(
+      onTap: () => print('speech'),
+      textStyle: const TextStyle(
+        color: Colors.red,
+      ),
+    ),
+    'recognition': HighlightedWord(
+      onTap: () => print('recognition'),
+      textStyle: const TextStyle(
+        color: Colors.green,
+      ),
+    ),
+  };
+  late final stt.SpeechToText _speech;
+  bool _isListening = false;
+  final String _text = 'Press the button and start speaking';
+  final double _confidence = 1.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _speech = stt.SpeechToText();
+  }
+
   buildMessage(Message message, bool isMe) {
     final Container container = Container(
       margin: isMe
@@ -82,6 +116,8 @@ class _ChatScreenState extends State<ChatScreen> {
       height: 70.0,
       color: Colors.white,
       child: Row(
+        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        // crossAxisAlignment: CrossAxisAlignment.baseline,
         children: [
           IconButton(
             onPressed: () {},
@@ -90,11 +126,32 @@ class _ChatScreenState extends State<ChatScreen> {
             iconSize: 25.0,
           ),
           Expanded(
-            child: TextField(
-              textCapitalization: TextCapitalization.sentences,
-              onChanged: (value) {},
-              decoration: InputDecoration.collapsed(
-                hintText: 'Send a message...',
+            child: SingleChildScrollView(
+              reverse: true,
+              child: TextField(
+                textCapitalization: TextCapitalization.sentences,
+                onChanged: (value) {},
+                decoration: InputDecoration.collapsed(
+                  hintText: 'Send a message...',
+                ),
+              ),
+            ),
+          ),
+          AvatarGlow(
+            animate: true, //_isListening,
+            glowColor: Theme.of(context).primaryColor,
+            endRadius: 50.0,
+            duration: const Duration(milliseconds: 2000),
+            repeatPauseDuration: const Duration(milliseconds: 100),
+            repeat: true,
+            showTwoGlows: true,
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: FloatingActionButton(
+                onPressed: () {},
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.red,
+                child: Icon(_isListening ? Icons.mic : Icons.mic_none),
               ),
             ),
           ),
