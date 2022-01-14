@@ -1,4 +1,3 @@
-import 'package:chat_ui/models/message_model.dart';
 import 'package:chat_ui/widgets/category_selector.dart';
 import 'package:chat_ui/widgets/favorite_contacts.dart';
 import 'package:chat_ui/widgets/recent_chats.dart';
